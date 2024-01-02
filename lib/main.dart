@@ -39,13 +39,20 @@ class _MyAppState extends State<MyApp> {
             mainAxisAlignment: MainAxisAlignment.center,
             children: <Widget>[
               MaterialButton(
-                onPressed: () {
-                  // Stream the controller manages
-                  Stream<double> stream = controller.stream;
-                  streamSubscription = stream.listen((value) {
-                    debugPrint('Value from controller: $value');
+                onPressed: () async* {
+                  getDelayedRandiomValue().listen((value) {
+                    debugPrint('Value from Stream: $value');
                   });
                 },
+                // onPressed: () async {
+                //   var value1 = getDelayedRandiomValue();
+                //   var value2 = getDelayedRandiomValue();
+                //   // Stream the controller manages
+                //   // Stream<double> stream = controller.stream;
+                //   // streamSubscription = stream.listen((value) {
+                //   //   debugPrint('Value from controller: $value');
+                //   // });
+                // },
                 color: Colors.yellow,
                 child: const Text('Subscribe'),
               ),
@@ -65,7 +72,7 @@ class _MyAppState extends State<MyApp> {
                 },
                 color: Colors.red[200],
                 child: const Text('Close'),
-              )
+              ),
             ],
           ),
         ),
@@ -73,9 +80,16 @@ class _MyAppState extends State<MyApp> {
     );
   }
 
-  Future<double> getDelayedRandiomValue() async {
+  Stream<double> getDelayedRandiomValue() async* {
     var random = Random();
-    await Future.delayed(const Duration(seconds: 1));
-    return random.nextDouble();
+    while (true) {
+      await Future.delayed(const Duration(seconds: 1));
+      yield random.nextDouble();
+    }
   }
+  // Future<double> getDelayedRandiomValue() async {
+  //   var random = Random();
+  //   await Future.delayed(const Duration(seconds: 1));
+  //   return random.nextDouble();
+  // }
 }
